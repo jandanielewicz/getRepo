@@ -53,7 +53,6 @@ return [
     */
 
     'aliases' => [
-        'DefaultHelper' => App\Helpers\DefaultHelper::class
     ],
 
     'providers' => [

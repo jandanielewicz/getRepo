@@ -32,11 +32,14 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
-// default controller
+// choose default controller if not given
 $argv = $_SERVER['argv'];
 if (isset($argv['1']) && $argv['1'] != 'default') {
+
     array_splice( $argv, 1, 0, [ 'default'] );
 }
+
+
 
 $status = $kernel->handle(
     $input = new Symfony\Component\Console\Input\ArgvInput($argv),

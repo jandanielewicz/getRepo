@@ -4,9 +4,9 @@ namespace App\Commands;
 
 use App\SimpleClient;
 use App\Tool;
+use App\Enum\Enum;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
-use Exception;
 
 class DefaultCommand extends Command
 {
@@ -16,7 +16,7 @@ class DefaultCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'default {reponame}  {branchname} {--service=github}';
+    protected $signature = 'default {reponame} {branchname} {--service=github}';
 
     /**
      * The description of the command.
@@ -34,17 +34,25 @@ class DefaultCommand extends Command
         $service = $this->option('service');
 
         if (strpos($repoName, '/') === false) {
-            throw new Exception('Podaj repo w formacie xxx/yyyy');
-        }
-
-        if ($service !== 'github') {
-            throw new Exception('Na razie nie obsługiwane');
+            $this->error(Enum::REPO_WRONG_FORMAT);
+            return false;
         }
 
         $tool = new Tool();
         $url = $tool->getClientUrlByService($service, $repoName, $branchName);
+
+        if (empty($url)) {
+            $this->error(Enum::REPO_TYPE_NOT_AVAILABLE);
+            return false;
+        }
+
         $dataFromSource = (new SimpleClient())->getDataFromSource($url);
         $lastShaForBranch = $tool->searchArrayValueByKey($dataFromSource, 'sha');
+
+        if (empty($lastShaForBranch)) {
+            $this->error(Enum::SHA_NOT_FOUND);
+            return false;
+        }
 
         $this->info($lastShaForBranch);
     }

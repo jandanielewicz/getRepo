@@ -21,8 +21,10 @@ class Tool
 
     {
         switch ($service) {
-            default:
+            case 'github':
                 return   "https://api.github.com/repos/" . $repoName . "/commits?sha="  .$branchName;
+            default:
+                return false;
         }
     }
 
