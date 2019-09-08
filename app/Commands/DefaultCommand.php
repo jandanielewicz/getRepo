@@ -42,7 +42,7 @@ class DefaultCommand extends Command
         $url = $tool->getClientUrlByService($service, $repoName, $branchName);
 
         if (empty($url)) {
-            $this->error(Enum::REPO_TYPE_NOT_AVAILABLE);
+            $this->error(sprintf(Enum::REPO_TYPE_NOT_AVAILABLE . ' %s', $service));
             return false;
         }
 
